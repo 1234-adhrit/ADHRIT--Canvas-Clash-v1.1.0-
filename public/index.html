@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas Clash - Multiplayer Paint</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-shapes"></div>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo">CC</div>
+          <div>
+            <div class="title">Canvas Clash</div>
+            <div class="subtitle">Collaborative painting in real time</div>
+          </div>
+        </div>
+        <div class="room-pill">
+          Room: <span id="room-code">Solo</span>
+          <span class="room-sep">•</span>
+          <span id="room-title">Solo Studio</span>
+        </div>
+        <div class="status-pill" id="player-status">Players: 1</div>
+        <button class="ghost" id="leave-btn">Leave</button>
+      </header>
+
+      <section class="toolbar">
+        <div class="tool-group">
+          <label for="tool-select">Tool</label>
+          <select id="tool-select">
+            <option value="pen">Pen</option>
+            <option value="line">Line</option>
+            <option value="rect">Square</option>
+            <option value="circle">Circle</option>
+            <option value="triangle">Triangle</option>
+            <option value="eraser">Eraser</option>
+          </select>
+        </div>
+        <div class="tool-group">
+          <label for="color-input">Color</label>
+          <input type="color" id="color-input" value="#1f2937" />
+        </div>
+        <div class="tool-group size-group">
+          <label for="size-input">Brush</label>
+          <input type="range" id="size-input" min="2" max="40" value="6" />
+          <span id="size-value">6</span>
+        </div>
+        <div class="tool-group actions">
+          <label>Actions</label>
+          <div class="action-row">
+            <button id="undo-btn" class="secondary small" type="button">Undo</button>
+            <button id="clear-btn" class="ghost small" type="button">Clear</button>
+            <button id="export-btn" class="primary small" type="button">Export PNG</button>
+          </div>
+          <div class="action-note" id="host-note">Host only: Undo & Clear</div>
+        </div>
+        <div class="tool-hint" id="draw-hint">Solo mode</div>
+      </section>
+
+      <main class="main">
+        <section class="canvas-area">
+          <div class="canvas-shell">
+            <canvas id="paint"></canvas>
+            <canvas id="overlay"></canvas>
+            <div id="cursor-layer"></div>
+            <div id="wait-overlay" class="wait-overlay">
+              Waiting for at least 2 players to join...
+            </div>
+          </div>
+        </section>
+        <aside class="chat">
+          <div class="chat-header">Team Chat</div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <form class="chat-input" id="chat-form">
+            <input
+              type="text"
+              id="chat-text"
+              placeholder="Say hi to the room..."
+              autocomplete="off"
+            />
+            <button type="submit">Send</button>
+          </form>
+          <div class="chat-note" id="chat-note">Chat is disabled in solo mode.</div>
+        </aside>
+      </main>
+    </div>
+
+    <div class="lobby" id="lobby">
+      <div class="lobby-card">
+        <div class="lobby-header">
+          <div class="logo large">CC</div>
+          <div>
+            <h1>Canvas Clash</h1>
+            <p>Jump into a shared canvas or paint solo in seconds.</p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="name-input">Display name (required for multiplayer)</label>
+          <input type="text" id="name-input" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <label for="name-color">Name color</label>
+          <input type="color" id="name-color" value="#0ea5e9" />
+        </div>
+        <div class="field">
+          <label for="room-title-input">Room title (for create)</label>
+          <input type="text" id="room-title-input" placeholder="e.g. Sketch Lab" />
+        </div>
+        <div class="field">
+          <label for="room-tags-input">Tags (comma separated)</label>
+          <input type="text" id="room-tags-input" placeholder="manga, neon, portraits" />
+        </div>
+        <div class="field">
+          <label for="room-password-input">Room password (optional)</label>
+          <input type="password" id="room-password-input" placeholder="Leave blank for public rooms" />
+        </div>
+        <div class="field inline">
+          <label class="toggle">
+            <input type="checkbox" id="spectator-toggle" />
+            Join as spectator (watch only)
+          </label>
+        </div>
+        <div class="field">
+          <label for="room-input">Room code</label>
+          <input type="text" id="room-input" placeholder="e.g. G7K2P" />
+        </div>
+        <div class="server-list">
+          <div class="server-header">
+            <span>Available Servers</span>
+            <button id="refresh-rooms" class="ghost small" type="button">Refresh</button>
+          </div>
+          <div id="server-empty" class="server-empty">No active rooms yet.</div>
+          <div id="server-list" class="server-items"></div>
+        </div>
+        <div class="button-row">
+          <button id="create-btn" class="primary">Create Room</button>
+          <button id="join-btn" class="secondary">Join Room</button>
+        </div>
+        <div class="divider">or</div>
+        <button id="solo-btn" class="ghost wide">Play Solo</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+  </body>
+</html>
