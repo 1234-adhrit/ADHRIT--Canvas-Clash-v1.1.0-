@@ -98,3 +98,7 @@ Demo GIF:
 
 - The UI runs at **100% scale**, and the lobby card is scrollable for long forms.
 - For external access, deploy the server and open the port (default 3000).
+
+Go Online
+
+https://adhrit-canvas-clash-new.onrender.com
